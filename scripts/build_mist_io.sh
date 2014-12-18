@@ -8,7 +8,7 @@ TIME_NOW=`date +"%s"`
 STATIC_FILES_CHANGED="false"
 
 MIST_JS="src/mist/io/static/build/mist.js"
-MIST_CSS="src/mist/io/static/mist.css"
+MIST_CSS="src/mist/io/static/build/mist.css"
 
 css_build="src/mist/io/static/build/mist-$TIME_NOW.css"
 js_build="src/mist/io/static/build/mist-$TIME_NOW.js"
@@ -144,15 +144,15 @@ function commitChanges {
         done
 
         # Remove changed css files from git
-        css_files=`ls -1tr src/mist/io/static/mist-*.css`
+        css_files=`ls -1tr src/mist/io/static/build/mist-*.css`
         for x in $css_files
         do
           git rm -f $x
         done
 
         # Make a timestamped links to build files
-        ln -sf $MIST_JS $js_build
-        ln -sf $MIST_CSS $css_build
+        ln -sf 'mist.js' $js_build
+        ln -sf 'mist.css' $css_build
         git add $js_build $css_build
 
         # Check if there is anything to commit
@@ -166,7 +166,7 @@ function commitChanges {
 
             # Replace html references of mist.js and mist.css
             sed s%\.\./build/mist.*%\.\./build/mist-$TIME_NOW\"%g -i $home_pt
-            sed s%resources/mist.*%resources/mist-$TIME_NOW\.css\"%g -i $home_pt
+            sed s%resources/mist.*%resources/build/mist-$TIME_NOW\.css\"%g -i $home_pt
 
             git commit -a -m "Automated build of mist.js & mist.css "
             BRANCH=`git branch | awk '/\*/ { print $2; }'`
